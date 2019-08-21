@@ -3,7 +3,7 @@ TFM UNIR Análisis por rango horario
 
 Análisis por rango horario del consumo energético de 20 hogares. 
 
-# Fuente original
+# Artículo original
 
 https://www.nature.com/articles/sdata2016122
 
