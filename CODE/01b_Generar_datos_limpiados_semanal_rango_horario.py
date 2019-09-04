@@ -68,7 +68,7 @@ def limpiarDatos(dt_filtrado, rango):
 # In[5]:
 
 
-def dfTransforma6H(fichero, columna):
+def dfTransform6HFile(fichero, columna):
     """Agrupa los datos obtenidos del fichero file
     por rangos de 6H
      
@@ -110,10 +110,10 @@ def generarFicheroSemanal(dt_filtrado_6H, campo):
     datos_filtrar_18 = limpiarDatos(dt_filtrado_6H, 18)
 
     # Filtrar por hora y obtener los datos agrupados por semana
-    dt_filtrado_6H_Semana = datos_filtrar_0.rolling(window=TAMANO_VENTANA, center=True).mean().resample("W").mean().apply(lambda x: round(x, DECIMALES))
-    w6 = datos_filtrar_6.rolling(window=TAMANO_VENTANA, center=True).mean().resample("W").mean().apply(lambda x: round(x, DECIMALES))
-    w12 = datos_filtrar_12.rolling(window=TAMANO_VENTANA, center=True).mean().resample("W").mean().apply(lambda x: round(x, DECIMALES))
-    w18 = datos_filtrar_18.rolling(window=TAMANO_VENTANA, center=True).mean().resample("W").mean().apply(lambda x: round(x, DECIMALES))
+    dt_filtrado_6H_Semana = datos_filtrar_0.resample("W").mean().apply(lambda x: round(x, DECIMALES))
+    w6 = datos_filtrar_6.resample("W").mean().apply(lambda x: round(x, DECIMALES))
+    w12 = datos_filtrar_12.resample("W").mean().apply(lambda x: round(x, DECIMALES))
+    w18 = datos_filtrar_18.resample("W").mean().apply(lambda x: round(x, DECIMALES))
     
     # Preparar fichero por rangos
     dt_filtrado_6H_Semana['Rango 06-12'] = w6[campo]
@@ -125,36 +125,36 @@ def generarFicheroSemanal(dt_filtrado_6H, campo):
     return dt_filtrado_6H_Semana
 
 
-# In[9]:
+# In[7]:
 
 
 # Generar los ficheros con los datos filtrados
-for num_hogar in range(1, 2):
+for num_hogar in range(1, 22):
     if num_hogar != 14:
     
         fichero = NOMBRE_FICHERO_ORIGEN + str(num_hogar)
         
         # Filtrar por fechas los datos del campo seleccionado
-        dt_filtrado_6H = dfTransforma6H(fichero, CAMPO)
-        print(dt_filtrado_6H.head(10))
+        dt_filtrado_6H = dfTransform6HFile(fichero, CAMPO)
+        
         # Generar fichero con los valores energéticos agrupados por fechas
         dt_filtrado_6H_Semana  = generarFicheroSemanal(dt_filtrado_6H, CAMPO)
         
         # Se ajustan los datos agrupados
         if num_hogar in [6]:
-            dt_filtrado_6H_Semana.iloc[9:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango.csv', sep=',', encoding='utf-8')
+            dt_filtrado_6H_Semana.iloc[9:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR.csv', sep=',', encoding='utf-8')
         
         if num_hogar in [3, 11]:
-            dt_filtrado_6H_Semana.iloc[4:-5, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango.csv', sep=',', encoding='utf-8')
+            dt_filtrado_6H_Semana.iloc[4:-5, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR.csv', sep=',', encoding='utf-8')
         
         if num_hogar in [4, 5, 12, 15, 16, 18, 21]:
-            dt_filtrado_6H_Semana.iloc[5:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango.csv', sep=',', encoding='utf-8')
+            dt_filtrado_6H_Semana.iloc[5:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR.csv', sep=',', encoding='utf-8')
         
         if num_hogar in [10]:
-            dt_filtrado_6H_Semana.iloc[6:-5, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango.csv', sep=',', encoding='utf-8')
+            dt_filtrado_6H_Semana.iloc[6:-5, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR.csv', sep=',', encoding='utf-8')
         
         if num_hogar in [1, 2, 7, 8, 9, 13, 14, 17, 19, 20]:
-            dt_filtrado_6H_Semana.iloc[4:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango.csv', sep=',', encoding='utf-8')
+            dt_filtrado_6H_Semana.iloc[4:-4, :].to_csv('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR.csv', sep=',', encoding='utf-8')
     
 
 

@@ -10,6 +10,7 @@
 from matplotlib import pyplot
 import matplotlib.pyplot as plt
 from pandas import read_csv
+import os
 
 
 # In[2]:
@@ -17,7 +18,7 @@ from pandas import read_csv
 
 # Constantes
 RUTA_ACTUAL = os.path.dirname(os.path.realpath('__file__'))
-DIRECTORIO_GUARDADO_IMG = 'IMG_GRAPH'
+DIRECTORIO_GUARDADO_IMG = 'IMG_PRED'
 
 
 # In[3]:
@@ -31,7 +32,7 @@ pyplot.rcParams['font.size'] = 10
 # In[4]:
 
 
-def showGraph(dataset, fichero, numero_hogar):
+def mostrarGrafico(dataset, fichero, numero_hogar, rango):
     """Muestra el gráfico de la gráfica y se guarda
     la misma en un fichero png.
      
@@ -42,16 +43,16 @@ def showGraph(dataset, fichero, numero_hogar):
     """
     # Genera el gráfico y se establecen los ejes
     grafico_interpolado = dataset.interpolate(method='spline', order=2)
-    plot = grafico_interpolado.plot()
+    plot = grafico_interpolado.plot(xticks = dataset.index)
     
     # Configurando la gráfica y mostrar el grafico
-    plt.title('Consumo semanal por rango horario. Hogar ' + numero_hogar, fontsize = 16)
+    plt.title('Comparativa test y predicción (' + rango +'). Hogar ' + numero_hogar, fontsize = 16)
     plt.xlabel('Semanas', fontsize = 14)
     plt.ylabel('Consumo de energía', fontsize = 14)
     plt.show()
     
     # Se recoge la gráfica y se guarda en un fichero png
-    fichero = os.path.join(RUTA_ACTUAL, DIRECTORIO_GUARDADO_IMG, fichero + '.png')
+    fichero = os.path.join(RUTA_ACTUAL, DIRECTORIO_GUARDADO_IMG, fichero +'_' + rango+ '_' + '.png')
     figura = plot.get_figure()
     figura.savefig(fichero)
 
@@ -66,8 +67,15 @@ def leerFicheroYDibujarGrafica(fichero, numero_hogar):
     fichero -- nombre del fichero a leer
     numero_hogar -- numero de hogar a tratar
     """
-    dataset = read_csv(fichero + '.csv', header=0, infer_datetime_format=True, index_col=['Time'])
-    showGraph(dataset, fichero, numero_hogar)
+    dataset = read_csv(fichero + '.csv', header=0, index_col=['Semanas'])
+    df = dataset[['Test Rango 00-06','Pred Rango 00-06']] 
+    mostrarGrafico(df, fichero, numero_hogar, 'rango 00-06')
+    df = dataset[['Test Rango 06-12','Pred Rango 06-12']] 
+    mostrarGrafico(df, fichero, numero_hogar, 'rango 06-12')
+    df = dataset[['Test Rango 12-18','Pred Rango 12-18']] 
+    mostrarGrafico(df, fichero, numero_hogar, 'rango 12-18')
+    df = dataset[['Test Rango 18-00','Pred Rango 18-00']] 
+    mostrarGrafico(df, fichero, numero_hogar, 'rango 18-00')
 
 
 # In[6]:
@@ -76,5 +84,12 @@ def leerFicheroYDibujarGrafica(fichero, numero_hogar):
 # Generar las gráficas
 for num_hogar in range(1, 22):
     if num_hogar != 14:
-        leerFicheroYDibujarGrafica('Hogar_' + str(num_hogar) + '_filtro_semanal_rango', str(num_hogar))
+        dataset = leerFicheroYDibujarGrafica('Hogar_' + str(num_hogar) + '_prediccion_normalmodeloAR', str(num_hogar))
+        dataset = leerFicheroYDibujarGrafica('Hogar_' + str(num_hogar) + '_prediccion_wfmodeloAR', str(num_hogar))
+
+
+# In[ ]:
+
+
+
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[18]:
+# In[1]:
 
 
 # Juan Pardo Palazón
@@ -13,7 +13,7 @@ from pandas import read_csv
 import pandas as pd
 
 
-# In[19]:
+# In[2]:
 
 
 def crearDataFrame():
@@ -27,13 +27,13 @@ def crearDataFrame():
     return df
 
 
-# In[20]:
+# In[3]:
 
 
 def calcularDesviacionMediaCoeficiente(dataset, numeroHogar, contador, df):
     """Genera un data frame calculando la desviacion, 
     la media y el coeficiente de variabilidad para todos los rangos
-     
+    Y la proporción de consumo del rango 00-06 en relación al resto 
     Argumentos:
     dataset -- datos de un hogar
     numeroHogar --- numeroHogar
@@ -48,6 +48,11 @@ def calcularDesviacionMediaCoeficiente(dataset, numeroHogar, contador, df):
     coef2 = (desviacionColumnas[2]/mediaColumnas[2])*100
     coef3 = (desviacionColumnas[3]/mediaColumnas[3])*100         
 
+    # Se calcula la proporción de consumo nocturno
+    # en relación al resto de consumo de los demas rangos
+    sumaMediasRangos = mediaColumnas[0]+mediaColumnas[1]+mediaColumnas[2]+mediaColumnas[3]
+    proporc_r0 = (mediaColumnas[0]*100)/sumaMediasRangos
+    
     # Se guarda en una fila los resultados y se redondea a 2 decimales
     df.loc[contador, 'stdRango 00-06'] = desviacionColumnas[0].round(2)
     df.loc[contador, 'meanRango 00-06'] = mediaColumnas[0].round(2)
@@ -61,11 +66,12 @@ def calcularDesviacionMediaCoeficiente(dataset, numeroHogar, contador, df):
     df.loc[contador, 'stdRango 18-00'] = desviacionColumnas[3].round(2)
     df.loc[contador, 'meanRango 18-00'] = mediaColumnas[3].round(2)
     df.loc[contador, 'coefRango 18-00'] = coef3.round(2)
+    df.loc[contador, 'prop. 00-06 resto'] = proporc_r0.round(2)
 
     return df
 
 
-# In[21]:
+# In[4]:
 
 
 def insertarFila(file_name, numero_hogar, contador, df):
@@ -86,11 +92,11 @@ def insertarFila(file_name, numero_hogar, contador, df):
     df = calcularDesviacionMediaCoeficiente(dataset, numero_hogar, contador, df)
     
     # Se guarda en una fila los datos obtenidos en df
-    df.to_csv('Medias_Y_Coeficientes_Hogares222.csv', sep=',', encoding='utf-8')
+    df.to_csv('Medias_Y_Coeficientes_Hogares.csv', sep=',', encoding='utf-8')
     return df
 
 
-# In[22]:
+# In[5]:
 
 
 contador = 0
@@ -103,4 +109,10 @@ for num_hogar in range(1, 22):
     contador += 1
     if num_hogar != 14:
         insertarFila('Hogar_' + str(num_hogar) + '_filtro_semanal_rango', str(num_hogar), contador, df)
+
+
+# In[ ]:
+
+
+
 

@@ -10,6 +10,7 @@
 from matplotlib import pyplot
 import matplotlib.pyplot as plt
 from pandas import read_csv
+import os
 
 
 # In[2]:
@@ -45,7 +46,7 @@ def showGraph(dataset, fichero, numero_hogar):
     plot = grafico_interpolado.plot()
     
     # Configurando la gráfica y mostrar el grafico
-    plt.title('Consumo semanal por rango horario. Hogar ' + numero_hogar, fontsize = 16)
+    plt.title('Consumo semanal por rango horario (Sin Rolling). Hogar ' + numero_hogar, fontsize = 16)
     plt.xlabel('Semanas', fontsize = 14)
     plt.ylabel('Consumo de energía', fontsize = 14)
     plt.show()
@@ -76,5 +77,11 @@ def leerFicheroYDibujarGrafica(fichero, numero_hogar):
 # Generar las gráficas
 for num_hogar in range(1, 22):
     if num_hogar != 14:
-        leerFicheroYDibujarGrafica('Hogar_' + str(num_hogar) + '_filtro_semanal_rango', str(num_hogar))
+        leerFicheroYDibujarGrafica('Hogar_' + str(num_hogar) + '_filtro_semanal_rango_NR', str(num_hogar))
+
+
+# In[ ]:
+
+
+
 
